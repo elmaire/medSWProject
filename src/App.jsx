@@ -1,23 +1,41 @@
-// Importieren der Stildatei und notwendiger Komponenten
-import './App.css'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Patients from './components/Patients.jsx';
-import {useNavigate} from "react-router-dom"; // Import des React Router Hooks für die Navigation
+import {useNavigate} from "react-router-dom";
+import './App.css';
 
-// Hauptkomponente der Anwendung
 function App() {
-    // Hook für die Navigation zwischen Routen
     let navigate = useNavigate();
-
     return (
         <>
-        {/* Überschrift für die Patientenliste */}
-        <h1>Patientenliste</h1>
-            {/* Einbinden der Patientenkomponente */}
-            <Patients />
-            {/* Button zum Navigieren zur About-Seite mit roter Textfarbe */}
-            <button style={{color: "red"}} onClick={() => {navigate("/about")}}>Go to about page</button>
+            {/* Modernisierte Navbar */}
+            <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top border-bottom" style={{zIndex: 1050}}>
+                <div className="container">
+                    <span className="navbar-brand d-flex align-items-center gap-2 fw-bold text-primary" style={{cursor: 'pointer', fontSize: 22}} onClick={() => navigate('/')}>
+                        <i className="bi bi-hospital-fill" style={{fontSize: 28, color: '#0d6efd'}}></i> Patientenverwaltung
+                    </span>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav ms-auto gap-2">
+                            <li className="nav-item">
+                                <span className="nav-link fw-semibold text-primary" style={{cursor: 'pointer'}} onClick={() => navigate('/')}>Start</span>
+                            </li>
+                            <li className="nav-item">
+                                <span className="nav-link fw-semibold text-primary" style={{cursor: 'pointer'}} onClick={() => navigate('/about')}>Über</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            {/* Hauptinhalt */}
+            <div className="main-bg min-vh-100 pb-5">
+                <div className="container pt-4">
+                    <Patients />
+                </div>
+            </div>
+            {/* Fußzeile entfernt */}
         </>
     )
 }
-export default App; // Exportieren der Komponente für die Verwendung in anderen Dateien
-
+export default App;
