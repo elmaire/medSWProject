@@ -1,8 +1,8 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  width: 100%;
+  padding: 0;
 }
 
 .logo {
@@ -40,3 +40,52 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Allgemeine Stile */
+.main-bg {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Patientenkarten */
+.patient-card {
+  border-radius: 22px !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.patient-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Avatars */
+.avatar-container {
+  margin-bottom: 1rem;
+}
+
+/* Text Stile */
+.text-gradient {
+  background: linear-gradient(135deg, #0d6efd 0%, #6ea8fe 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+

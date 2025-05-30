@@ -25,20 +25,36 @@ function Patients() {
 
     return (
         <div className="container py-4">
-            <h2 className="mb-4 text-center">Patientenübersicht</h2>
+            <h2 className="mb-4 text-center fw-bold text-primary" style={{letterSpacing: 1}}>Patientenübersicht</h2>
             <div className="row g-4 justify-content-center">
                 {patients.map((patient, index) => (
                     <div 
                         key={index}
                         className="col-12 col-sm-6 col-md-4 col-lg-3"
                     >
-                        <div className="card h-100 shadow patient-card-hover" onClick={() => handlePatientClick(patient)} style={{cursor: 'pointer'}}>
-                            <div className="card-body text-center">
-                                <div className="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style={{width: 60, height: 60, fontSize: 24}}>
-                                    {patient.firstName[0]}{patient.lastName[0]}
+                        <div className="card patient-card border-0 h-100 shadow-sm position-relative overflow-hidden animate-fade-in"
+                             onClick={() => handlePatientClick(patient)}
+                             style={{
+                                 cursor: 'pointer',
+                                 borderRadius: '22px'
+                             }}>
+                            <div className="card-body text-center d-flex flex-column align-items-center justify-content-center p-4">
+                                <div className="avatar-container">
+                                    <div className="rounded-circle d-flex align-items-center justify-content-center mb-3"
+                                         style={{
+                                             width: 80,
+                                             height: 80,
+                                             background: 'linear-gradient(135deg, #6ea8fe 0%, #0d6efd 100%)',
+                                             color: '#fff',
+                                             border: '4px solid #fff',
+                                             boxShadow: '0 4px 15px rgba(13,110,253,0.25)',
+                                             fontSize: 28
+                                         }}>
+                                        <span>{patient.firstName[0]}{patient.lastName[0]}</span>
+                                    </div>
                                 </div>
-                                <h5 className="card-title">{patient.firstName} {patient.lastName}</h5>
-                                <p className="card-text text-muted">Klicken Sie für Details</p>
+                                <h5 className="card-title fw-bold mb-1" style={{color: '#0d6efd'}}>{patient.firstName} {patient.lastName}</h5>
+                                <p className="card-text text-secondary mb-0" style={{fontSize: 15}}>Klicken für Details</p>
                             </div>
                         </div>
                     </div>
