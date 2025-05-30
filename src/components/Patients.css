@@ -7,6 +7,54 @@
     margin: 0 auto; /* Zentriert den Container horizontal */
 }
 
+/* Styling für die Suchleiste */
+.search-container {
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.search-criteria {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    min-width: 200px;
+    font-size: 1rem;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.search-results {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.5rem 0;
+}
+
+/* Dunkelmodus für die Suchleiste */
+@media (prefers-color-scheme: dark) {
+    .search-criteria,
+    .search-input {
+        background-color: #1a1a1a;
+        border-color: #333;
+        color: rgba(255, 255, 255, 0.87);
+    }
+
+    .search-results {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
 /* Grid-Layout für die Patientenkarten mit 4 Spalten und Abständen zwischen den Elementen */
 .patients-grid {
     display: grid;

@@ -13,68 +13,151 @@ function Patients() {
     const [patients, setPatients] = useState([]);
     // Zustand für Ladezustand
     const [loading, setLoading] = useState(true);
+    // Zustand für Ladefortschritt
+    const [loadProgress, setLoadProgress] = useState({ current: 0, total: '?' });
     // Zustand für eventuelle Fehlermeldungen
     const [error, setError] = useState(null);
+
+    // Zustände für die Suchfunktionalität
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchCriteria, setSearchCriteria] = useState('name');
+    const [filteredPatients, setFilteredPatients] = useState([]);
 
     // FHIR-Server URL
     const fhirServerUrl = "http://10.25.6.37:8080/fhir";
 
     // useEffect-Hook zum Laden der Patientendaten beim ersten Rendering der Komponente
     useEffect(() => {
-        // Funktion zum Abrufen der Patientendaten vom FHIR-Server
+        // Funktion zum Abrufen der Patientendaten vom FHIR-Server mit Paginierung
         const fetchPatients = async () => {
             try {
                 // Setze Ladezustand
                 setLoading(true);
+                setLoadProgress({ current: 0, total: '?' });
 
-                // Abruf der Patienten vom FHIR-Server
-                const response = await fetch(`${fhirServerUrl}/Patient`);
+                let allPatients = [];
+                let nextUrl = `${fhirServerUrl}/Patient?_count=50`; // Starten mit 50 Patienten pro Seite
+                let pageCounter = 0;
 
-                // Überprüfung auf erfolgreichen Abruf
-                if (!response.ok) {
-                    throw new Error(`FHIR-Server antwortete mit Status: ${response.status}`);
+                // Solange es eine nächste URL gibt, weitere Seiten laden
+                while (nextUrl) {
+                    pageCounter++;
+                    setLoadProgress(prev => ({ ...prev, current: pageCounter }));
+
+                    // Aktuelle Seite abrufen
+                    const response = await fetch(nextUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`FHIR-Server antwortete mit Status: ${response.status}`);
+                    }
+
+                    const bundle = await response.json();
+
+                    // Patienten aus dem Bundle extrahieren
+                    if (bundle.entry && bundle.entry.length > 0) {
+                        const pagePatients = bundle.entry.map(entry => {
+                            const resource = entry.resource;
+                            const name = resource.name && resource.name.length > 0 ? resource.name[0] : {};
+
+                            return {
+                                id: resource.id || "",
+                                firstName: name.given ? name.given[0] || "" : "",
+                                lastName: name.family || "",
+                                birthDate: resource.birthDate || "",
+                                gender: resource.gender || ""
+                            };
+                        });
+
+                        // Hinzufügen der Patienten dieser Seite zum Gesamtergebnis
+                        allPatients = [...allPatients, ...pagePatients];
+
+                        // Aktualisieren des Patientenzustands während des Ladens
+                        setPatients([...allPatients]);
+                        setFilteredPatients([...allPatients]);
+                    }
+
+                    // URL für die nächste Seite finden (falls vorhanden)
+                    nextUrl = null;
+                    if (bundle.link) {
+                        const nextLink = bundle.link.find(link => link.relation === 'next');
+                        if (nextLink && nextLink.url) {
+                            nextUrl = nextLink.url;
+
+                            // Kurze Pause zwischen den Anfragen, um den Server nicht zu überlasten
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                        }
+                    }
                 }
 
-                // Umwandlung der Antwort in JSON
-                const data = await response.json();
-
-                // Extraktion der relevanten Patientendaten aus der FHIR-Ressource
-                const patientData = data.entry ? data.entry.map(entry => {
-                    const resource = entry.resource;
-                    // Extrahieren des Vor- und Nachnamens aus dem FHIR-Format
-                    // FHIR speichert Namen in einem Array von HumanName-Objekten
-                    const name = resource.name && resource.name.length > 0 ? resource.name[0] : {};
-
-                    return {
-                        id: resource.id || "",
-                        firstName: name.given ? name.given[0] || "" : "",
-                        lastName: name.family || "",
-                        // Weitere Patientendaten könnten hier extrahiert werden
-                    };
-                }) : [];
-
-                // Aktualisieren des Patientenzustands mit den abgerufenen Daten
-                setPatients(patientData);
-                // Zurücksetzen des Ladezustands und Fehlers
+                // Laden abgeschlossen
+                setLoadProgress({ current: pageCounter, total: pageCounter });
                 setLoading(false);
                 setError(null);
+
+                console.log(`Insgesamt ${allPatients.length} Patienten von ${pageCounter} Seiten geladen`);
+
             } catch (err) {
                 console.error("Fehler beim Abruf der Patientendaten:", err);
                 setError(err.message);
                 setLoading(false);
 
                 // Fallback zu Demo-Patienten im Fehlerfall
-                setPatients([
-                    {firstName: "Maria", lastName: "Buslaeva"},
-                    {firstName: "Florian", lastName: "Maier"},
-                    {firstName: "Hannes", lastName: "Dieter"}
-                ]);
+                const demoPatients = [
+                    {firstName: "Maria", lastName: "Buslaeva", birthDate: "1990-01-01", gender: "female"},
+                    {firstName: "Florian", lastName: "Maier", birthDate: "1985-05-15", gender: "male"},
+                    {firstName: "Hannes", lastName: "Dieter", birthDate: "1978-12-24", gender: "male"}
+                ];
+                setPatients(demoPatients);
+                setFilteredPatients(demoPatients);
             }
         };
 
         // Aufruf der Funktion zum Abrufen der Patientendaten
         fetchPatients();
-    }, []); // Leeres Abhängigkeitsarray bedeutet, dass dieser Effekt nur einmal nach dem ersten Rendering ausgeführt wird
+    }, []);
+
+    // useEffect-Hook zur Filterung der Patientenliste beim Ändern des Suchbegriffs oder Kriteriums
+    useEffect(() => {
+        if (!searchTerm) {
+            setFilteredPatients(patients);
+            return;
+        }
+
+        const lowercasedSearch = searchTerm.toLowerCase();
+
+        // Filtern der Patienten basierend auf dem ausgewählten Suchkriterium
+        const filtered = patients.filter(patient => {
+            switch (searchCriteria) {
+                case 'name':
+                    return (
+                        (patient.firstName && patient.firstName.toLowerCase().includes(lowercasedSearch)) ||
+                        (patient.lastName && patient.lastName.toLowerCase().includes(lowercasedSearch))
+                    );
+                case 'firstName':
+                    return patient.firstName && patient.firstName.toLowerCase().includes(lowercasedSearch);
+                case 'lastName':
+                    return patient.lastName && patient.lastName.toLowerCase().includes(lowercasedSearch);
+                case 'birthDate':
+                    return patient.birthDate && patient.birthDate.includes(searchTerm);
+                case 'gender':
+                    return patient.gender && patient.gender.toLowerCase().includes(lowercasedSearch);
+                default:
+                    return true;
+            }
+        });
+
+        setFilteredPatients(filtered);
+    }, [searchTerm, searchCriteria, patients]);
+
+    // Funktion zum Aktualisieren des Suchbegriffs beim Ändern des Eingabefelds
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    // Funktion zum Aktualisieren des Suchkriteriums beim Ändern der Dropdown-Auswahl
+    const handleCriteriaChange = (e) => {
+        setSearchCriteria(e.target.value);
+    };
 
     // Funktion zur Behandlung von Klicks auf Patientenkarten
     // Navigiert zur Detailseite des ausgewählten Patienten und übergibt die Patientendaten
@@ -84,7 +167,14 @@ function Patients() {
 
     // Falls Daten noch geladen werden, zeige Ladeindikator an
     if (loading) {
-        return <div className="patients-container"><p>Lade Patientendaten...</p></div>;
+        return (
+            <div className="patients-container">
+                <p>Lade Patientendaten... Seite {loadProgress.current} von {loadProgress.total}</p>
+                <div className="progress-bar-container">
+                    <div className="progress-bar" style={{width: `${(loadProgress.current / (loadProgress.total === '?' ? loadProgress.current + 1 : loadProgress.total)) * 100}%`}}></div>
+                </div>
+            </div>
+        );
     }
 
     // Falls ein Fehler aufgetreten ist, zeige Fehlermeldung an
@@ -98,13 +188,46 @@ function Patients() {
 
     return (
         <div className="patients-container">
+            {/* Suchleiste mit Dropdown-Menü für Suchkriterien */}
+            <div className="search-container">
+                <div className="search-box">
+                    <select
+                        className="search-criteria"
+                        value={searchCriteria}
+                        onChange={handleCriteriaChange}
+                    >
+                        <option value="name">Name (Vor- oder Nachname)</option>
+                        <option value="firstName">Vorname</option>
+                        <option value="lastName">Nachname</option>
+                        <option value="birthDate">Geburtsdatum</option>
+                        <option value="gender">Geschlecht</option>
+                    </select>
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder={`Suche nach ${searchCriteria === 'name' ? 'Namen' : 
+                                        searchCriteria === 'firstName' ? 'Vornamen' : 
+                                        searchCriteria === 'lastName' ? 'Nachnamen' : 
+                                        searchCriteria === 'birthDate' ? 'Geburtsdatum (YYYY-MM-DD)' : 'Geschlecht'}`}
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                {searchTerm && (
+                    <p className="search-results">
+                        {filteredPatients.length} {filteredPatients.length === 1 ? 'Patient' : 'Patienten'} gefunden
+                    </p>
+                )}
+                <p className="total-patients">Insgesamt {patients.length} Patienten geladen</p>
+            </div>
+
             {/* Falls keine Patienten gefunden wurden */}
-            {patients.length === 0 ? (
+            {filteredPatients.length === 0 ? (
                 <p>Keine Patienten gefunden.</p>
             ) : (
                 <div className="patients-grid">
-                    {/* Mapping durch die Patientenliste zur Erstellung von Karten für jeden Patienten */}
-                    {patients.map((patient, index) => (
+                    {/* Mapping durch die gefilterte Patientenliste zur Erstellung von Karten für jeden Patienten */}
+                    {filteredPatients.map((patient, index) => (
                         <div
                             key={patient.id || index} // Verwende die ID als Schlüssel, falls verfügbar, sonst den Index
                             className="patient-card"
@@ -128,4 +251,3 @@ function Patients() {
 
 // Exportieren der Komponente für die Verwendung in anderen Dateien
 export default Patients;
-
