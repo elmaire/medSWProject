@@ -1,65 +1,78 @@
+/* CSS-Datei für die Patients-Komponente */
+
+/* Container für die gesamte Patientenliste mit Innenabstand und maximaler Breite */
 .patients-container {
     padding: 2rem;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto; /* Zentriert den Container horizontal */
 }
 
+/* Grid-Layout für die Patientenkarten mit 4 Spalten und Abständen zwischen den Elementen */
 .patients-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr); /* Erstellt 4 gleichbreite Spalten */
+    gap: 1.5rem; /* Abstand zwischen den Grid-Elementen */
     padding: 1rem;
 }
 
+/* Styling für die Patientenkarten mit hellem Hintergrund, abgerundeten Ecken und Schatten */
 .patient-card {
     background: #ffffff;
     border-radius: 10px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtiler Schatten für 3D-Effekt */
+    transition: transform 0.2s, box-shadow 0.2s; /* Sanfte Übergangseffekte */
+    cursor: pointer; /* Zeigt an, dass die Karte anklickbar ist */
+    text-align: center; /* Zentriert den Text in der Karte */
 }
 
+/* Hover-Effekt für Patientenkarten: leichte Aufwärtsbewegung und verstärkter Schatten */
 .patient-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px); /* Karte bewegt sich nach oben */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Verstärkter Schatten für Schwebeeffekt */
 }
 
+/* Styling für die Patienten-Avatare mit Initialen in einem Kreis */
 .patient-avatar {
     width: 80px;
     height: 80px;
-    background: #646cff;
-    color: white;
-    border-radius: 50%;
+    background: #646cff; /* Hintergrundfarbe für Avatar */
+    color: white; /* Textfarbe für die Initialen */
+    border-radius: 50%; /* Macht den Avatar kreisförmig */
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center; /* Zentriert Initialen vertikal */
+    justify-content: center; /* Zentriert Initialen horizontal */
     font-size: 1.5rem;
     font-weight: bold;
-    margin: 0 auto 1rem;
+    margin: 0 auto 1rem; /* Zentriert den Avatar und fügt Abstand nach unten hinzu */
 }
 
+/* Überschriften in den Patientenkarten */
 .patient-card h3 {
     margin: 0.5rem 0;
-    color: #213547;
+    color: #213547; /* Dunkle Textfarbe für gute Lesbarkeit */
 }
 
+/* Hinweistext in den Patientenkarten */
 .patient-card p {
-    color: #666;
+    color: #666; /* Hellere Textfarbe für Sekundärtext */
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Kleinere Schriftgröße für den Hinweistext */
 }
 
+/* Anpassungen für den Dunkelmodus */
 @media (prefers-color-scheme: dark) {
+    /* Dunkler Hintergrund für Karten im Dunkelmodus */
     .patient-card {
         background: #1a1a1a;
     }
     
+    /* Hellere Textfarbe für Überschriften im Dunkelmodus */
     .patient-card h3 {
         color: rgba(255, 255, 255, 0.87);
     }
     
+    /* Angepasste Textfarbe für Hinweistext im Dunkelmodus */
     .patient-card p {
         color: rgba(255, 255, 255, 0.6);
     }
@@ -67,19 +80,23 @@
 
 /* Responsive Design für verschiedene Bildschirmgrößen */
 @media (max-width: 1200px) {
+    /* Reduziert auf 3 Spalten bei mittelgroßen Bildschirmen */
     .patients-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 900px) {
+    /* Reduziert auf 2 Spalten bei kleineren Bildschirmen */
     .patients-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 600px) {
+    /* Einzelne Spalte für mobile Geräte */
     .patients-grid {
         grid-template-columns: 1fr;
     }
-} 
+}
+

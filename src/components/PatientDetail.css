@@ -1,22 +1,27 @@
+/* CSS-Datei für die PatientDetail-Komponente */
+
+/* Container für die gesamte Patientendetail-Ansicht mit Innenabstand und maximaler Breite */
 .patient-detail {
     padding: 2rem;
     max-width: 800px;
-    margin: 0 auto;
-} deine mom
+    margin: 0 auto; /* Zentriert den Container horizontal */
+}
 
+/* Styling für die Patientendetail-Karte mit hellem Hintergrund, abgerundeten Ecken und Schatten */
 .patient-detail-card {
     background: #ffffff;
     border-radius: 15px;
     padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtiler Schatten für 3D-Effekt */
+    text-align: center; /* Zentriert den Text und Elemente in der Karte */
 }
 
+/* Große Darstellung des Patienten-Avatars für die Detailansicht */
 .patient-avatar.large {
     width: 120px;
     height: 120px;
-    font-size: 2.5rem;
-    margin: 0 auto 1.5rem;
+    font-size: 2.5rem; /* Größere Schrift für die Initialen */
+    margin: 0 auto 1.5rem; /* Zentriert den Avatar und fügt Abstand nach unten hinzu */
 }
 
 .patient-info {
@@ -47,4 +52,5 @@
     .patient-info strong {
         color: #747bff;
     }
-} 
+}
+
