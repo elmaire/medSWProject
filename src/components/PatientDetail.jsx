@@ -15,31 +15,30 @@ function PatientDetail() {
     // Anzeige einer Fehlermeldung, wenn keine Patientendaten vorhanden sind
     if (!patient) {
         return (
-            <div className="patient-detail">
-                <h2>Patient nicht gefunden</h2>
-                {/* Button zur Rückkehr zur Hauptseite */}
-                <button onClick={() => navigate('/')}>Zurück zur Liste</button>
+            <div className="container py-5">
+                <div className="alert alert-danger text-center">
+                    <h2>Patient nicht gefunden</h2>
+                    <button className="btn btn-primary mt-3" onClick={() => navigate('/')}>Zurück zur Liste</button>
+                </div>
             </div>
         );
     }
 
     // Hauptanzeige mit Patientendetails
     return (
-        <div className="patient-detail">
-            <div className="patient-detail-card">
-                {/* Avatar des Patienten mit Initialen */}
-                <div className="patient-avatar large">
-                    {patient.firstName[0]}{patient.lastName[0]}
+        <div className="container py-5 d-flex justify-content-center">
+            <div className="card shadow p-4" style={{maxWidth: 400, width: '100%'}}>
+                <div className="d-flex flex-column align-items-center">
+                    <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3" style={{width: 80, height: 80, fontSize: 32}}>
+                        {patient.firstName[0]}{patient.lastName[0]}
+                    </div>
+                    <h2 className="mb-3">{patient.firstName} {patient.lastName}</h2>
+                    <div className="mb-4 w-100">
+                        <p><strong>Vorname:</strong> {patient.firstName}</p>
+                        <p><strong>Nachname:</strong> {patient.lastName}</p>
+                    </div>
+                    <button className="btn btn-outline-primary w-100" onClick={() => navigate('/')}>Zurück zur Liste</button>
                 </div>
-                {/* Vollständiger Name des Patienten als Überschrift */}
-                <h2>{patient.firstName} {patient.lastName}</h2>
-                {/* Abschnitt für detaillierte Patienteninformationen */}
-                <div className="patient-info">
-                    <p><strong>Vorname:</strong> {patient.firstName}</p>
-                    <p><strong>Nachname:</strong> {patient.lastName}</p>
-                </div>
-                {/* Button zur Rückkehr zur Hauptseite */}
-                <button onClick={() => navigate('/')}>Zurück zur Liste</button>
             </div>
         </div>
     );

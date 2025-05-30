@@ -24,23 +24,23 @@ function Patients() {
     };
 
     return (
-        <div className="patients-container">
-            <div className="patients-grid">
-                {/* Mapping durch die Patientenliste zur Erstellung von Karten für jeden Patienten */}
+        <div className="container py-4">
+            <h2 className="mb-4 text-center">Patientenübersicht</h2>
+            <div className="row g-4 justify-content-center">
                 {patients.map((patient, index) => (
                     <div 
-                        key={index} // Eindeutiger Schlüssel für jedes Element in der Liste
-                        className="patient-card"
-                        onClick={() => handlePatientClick(patient)} // Klick-Handler für Navigation zur Detailseite
+                        key={index}
+                        className="col-12 col-sm-6 col-md-4 col-lg-3"
                     >
-                        {/* Avatar mit Initialen des Patienten */}
-                        <div className="patient-avatar">
-                            {patient.firstName[0]}{patient.lastName[0]}
+                        <div className="card h-100 shadow patient-card-hover" onClick={() => handlePatientClick(patient)} style={{cursor: 'pointer'}}>
+                            <div className="card-body text-center">
+                                <div className="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style={{width: 60, height: 60, fontSize: 24}}>
+                                    {patient.firstName[0]}{patient.lastName[0]}
+                                </div>
+                                <h5 className="card-title">{patient.firstName} {patient.lastName}</h5>
+                                <p className="card-text text-muted">Klicken Sie für Details</p>
+                            </div>
                         </div>
-                        {/* Name des Patienten */}
-                        <h3>{patient.firstName} {patient.lastName}</h3>
-                        {/* Hinweistext für den Benutzer */}
-                        <p>Klicken Sie für Details</p>
                     </div>
                 ))}
             </div>
