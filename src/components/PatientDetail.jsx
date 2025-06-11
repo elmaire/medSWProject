@@ -20,6 +20,14 @@ function PatientDetail() {
     const [loading, setLoading] = useState(false);
     // Zustand für eventuelle Fehlermeldungen
     const [error, setError] = useState(null);
+    // Zustand für Ladezustand beim Löschen
+    const [deleting, setDeleting] = useState(false);
+    // Zustand für Bestätigungsdialog
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    // Zustand für kaskadierenden Bestätigungsdialog
+    const [showCascadeConfirm, setShowCascadeConfirm] = useState(false);
+    // Zustand für verknüpfte Ressourcen
+    const [linkedResources, setLinkedResources] = useState([]);
 
     // FHIR-Server URL
     const fhirServerUrl = "http://10.25.6.37:8080/fhir";
@@ -72,6 +80,40 @@ function PatientDetail() {
         fetchPatientDetails();
     }, [basicPatient]);
 
+    // Funktion zum Löschen eines Patienten
+    const deletePatient = async () => {
+        if (!patient || !patient.id) return;
+
+        try {
+            setDeleting(true);
+            // FHIR DELETE-Anfrage zum Löschen des Patienten
+            const response = await fetch(`${fhirServerUrl}/Patient/${patient.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/fhir+json'
+                }
+            });
+
+            if (!response.ok) {
+                // Spezifische Fehlerbehandlung für verschiedene Statuscodes
+                if (response.status === 409) {
+                    throw new Error(`Der Patient kann nicht gelöscht werden, da noch Verweise darauf existieren (z.B. Termine, Befunde).
+                    Bitte entfernen Sie zuerst alle verknüpften Daten oder kontaktieren Sie den Systemadministrator.`);
+                } else {
+                    throw new Error(`FHIR-Server antwortete mit Status: ${response.status}`);
+                }
+            }
+
+            // Navigation zurück zur Patientenliste nach erfolgreichem Löschen ohne Alert-Popup
+            navigate('/');
+        } catch (err) {
+            console.error("Fehler beim Löschen des Patienten:", err);
+            setError(`${err.message}`);
+            setDeleting(false);
+            setShowDeleteConfirm(false);
+        }
+    };
+
     // Anzeige einer Fehlermeldung, wenn keine Patientendaten vorhanden sind
     if (!patient) {
         return (
@@ -123,14 +165,15 @@ function PatientDetail() {
             <div className="patient-detail-card">
                 {/* Avatar des Patienten mit Initialen */}
                 <div className="patient-avatar large">
-                    {patient.firstName[0]}{patient.lastName[0]}
+                    {patient.firstName && patient.firstName[0] || "?"}
+                    {patient.lastName && patient.lastName[0] || "?"}
                 </div>
 
                 {/* Vollständiger Name des Patienten als Überschrift */}
                 <h2>{patient.firstName} {patient.lastName}</h2>
 
                 {/* Fehleranzeige, falls vorhanden */}
-                {error && <p className="error-message">Fehler beim Laden weiterer Details: {error}</p>}
+                {error && <p className="error-message">Fehler: {error}</p>}
 
                 {/* Abschnitt für detaillierte Patienteninformationen */}
                 <div className="patient-info">
@@ -156,8 +199,79 @@ function PatientDetail() {
                     )}
                 </div>
 
-                {/* Button zur Rückkehr zur Hauptseite */}
-                <button onClick={() => navigate('/')}>Zurück zur Liste</button>
+                {/* Bestätigungsdialog für das Löschen */}
+                {showDeleteConfirm && (
+                    <div className="delete-confirmation">
+                        <div>
+                            <h3>Patient löschen</h3>
+                            <p>Möchten Sie diesen Patienten wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+                            <div className="button-group">
+                                <button
+                                    onClick={deletePatient}
+                                    className="delete-confirm-btn"
+                                    disabled={deleting}
+                                >
+                                    {deleting ? 'Wird gelöscht...' : 'Ja, löschen'}
+                                </button>
+                                <button
+                                    onClick={() => setShowDeleteConfirm(false)}
+                                    className="cancel-btn"
+                                    disabled={deleting}
+                                >
+                                    Abbrechen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Bestätigungsdialog für kaskadierendes Löschen */}
+                {showCascadeConfirm && (
+                    <div className="cascade-confirmation">
+                        <div>
+                            <h3>Verknüpfte Daten löschen</h3>
+                            <p>Es wurden {linkedResources.length} verknüpfte Ressourcen gefunden. Möchten Sie diese ebenfalls löschen?</p>
+                            <ul>
+                                {linkedResources.map(resource => (
+                                    <li key={`${resource.type}-${resource.id}`}>
+                                        {resource.display}
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="button-group">
+                                <button
+                                    onClick={() => performDeletePatient(true)}
+                                    className="delete-confirm-btn"
+                                    disabled={deleting}
+                                >
+                                    {deleting ? 'Wird gelöscht...' : 'Ja, alle löschen'}
+                                </button>
+                                <button
+                                    onClick={() => setShowCascadeConfirm(false)}
+                                    className="cancel-btn"
+                                    disabled={deleting}
+                                >
+                                    Abbrechen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Button-Gruppe */}
+                <div className="button-group">
+                    {/* Button zur Rückkehr zur Hauptseite */}
+                    <button onClick={() => navigate('/')} className="back-btn">Zurück zur Liste</button>
+
+                    {/* Button zum Löschen des Patienten */}
+                    <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="delete-btn"
+                        disabled={deleting || !patient.id}
+                    >
+                        {deleting ? 'Wird gelöscht...' : 'Patient löschen'}
+                    </button>
+                </div>
             </div>
         </div>
     );
