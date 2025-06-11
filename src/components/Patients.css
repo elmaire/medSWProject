@@ -99,84 +99,62 @@
     align-items: center; /* Zentriert Initialen vertikal */
     justify-content: center; /* Zentriert Initialen horizontal */
     font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 auto 1rem; /* Zentriert den Avatar und fügt Abstand nach unten hinzu */
+    margin: 0 auto 1rem; /* Zentriert den Avatar horizontal und fügt unten Abstand hinzu */
 }
 
-/* Überschriften in den Patientenkarten */
+/* Styling für die Namen der Patienten */
 .patient-card h3 {
     margin: 0.5rem 0;
-    color: #213547; /* Dunkle Textfarbe für gute Lesbarkeit */
+    font-size: 1.2rem;
 }
 
-/* Styling für die Patient-Details */
+/* Container für die Patientendetails (Geburtsdatum, Geschlecht) */
 .patient-details {
-    margin: 0.7rem 0;
-    min-height: 20px;
-}
-
-.patient-birth-date, .patient-gender {
-    display: inline-block;
-    margin: 0 3px;
+    margin-top: 1rem;
     font-size: 0.9rem;
-    color: #555;
+    color: #666;
 }
 
-/* Hinweistext in den Patientenkarten */
-.patient-card p {
-    color: #666; /* Hellere Textfarbe für Sekundärtext */
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-    font-size: 0.9rem; /* Kleinere Schriftgröße für den Hinweistext */
+/* Styling für das Geburtsdatum */
+.patient-birth-date {
+    /* Spezifische Stile können hier hinzugefügt werden, wie Farbe oder Schriftgröße */
 }
 
-/* Anpassungen für den Dunkelmodus */
+/* Styling für das Geschlecht */
+.patient-gender {
+    /* Spezifische Stile können hier hinzugefügt werden, wie Farbe oder Schriftgröße */
+}
+
+/* Responsives Design für verschiedene Bildschirmgrößen */
+@media (max-width: 1200px) {
+    .patients-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 Spalten für mittelgroße Bildschirme */
+    }
+}
+
+@media (max-width: 768px) {
+    .patients-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 Spalten für kleine Bildschirme */
+    }
+}
+
+@media (max-width: 480px) {
+    .patients-grid {
+        grid-template-columns: 1fr; /* 1 Spalte für sehr kleine Bildschirme */
+    }
+
+    .search-box {
+        flex-direction: column; /* Suchfeld und Dropdown untereinander auf kleinen Bildschirmen */
+    }
+}
+
+/* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    /* Dunkler Hintergrund für Karten im Dunkelmodus */
     .patient-card {
         background: #1a1a1a;
     }
 
-    /* Hellere Textfarbe für Überschriften im Dunkelmodus */
-    .patient-card h3 {
-        color: rgba(255, 255, 255, 0.87);
-    }
-
-    /* Angepasste Textfarbe für Hinweistext und Details im Dunkelmodus */
-    .patient-card p, .patient-birth-date, .patient-gender {
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    .search-criteria,
-    .search-input {
-        background-color: #1a1a1a;
-        border-color: #333;
-        color: rgba(255, 255, 255, 0.87);
-    }
-
-    .search-results, .total-patients {
-        color: rgba(255, 255, 255, 0.6);
-    }
-}
-
-/* Responsive Design für verschiedene Bildschirmgrößen */
-@media (max-width: 1200px) {
-    /* Reduziert auf 3 Spalten bei mittelgroßen Bildschirmen */
-    .patients-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    /* Reduziert auf 2 Spalten bei kleineren Bildschirmen */
-    .patients-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    /* Einzelne Spalte für mobile Geräte */
-    .patients-grid {
-        grid-template-columns: 1fr;
+    .patient-avatar {
+        background: #747bff;
     }
 }
