@@ -129,15 +129,6 @@ function Patients() {
                 console.error("Fehler beim Abruf der Patientendaten:", err);
                 setError(err.message);
                 setLoading(false);
-
-                // Fallback zu Demo-Patienten im Fehlerfall
-                const demoPatients = [
-                    {firstName: "Maria", lastName: "Buslaeva", birthDate: "01.01.1990", gender: "weiblich"},
-                    {firstName: "Florian", lastName: "Maier", birthDate: "15.05.1985", gender: "männlich"},
-                    {firstName: "Hannes", lastName: "Dieter", birthDate: "24.12.1978", gender: "männlich"}
-                ];
-                setPatients(demoPatients);
-                setFilteredPatients(demoPatients);
             }
         };
 
@@ -200,7 +191,6 @@ function Patients() {
         return <div className="patients-container">
             <h2>Fehler beim Laden der Patienten</h2>
             <p>Fehler: {error}</p>
-            <p>Zeige Demo-Patienten an.</p>
         </div>;
     }
 
