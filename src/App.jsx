@@ -1,6 +1,5 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Patients from './components/Patients.jsx';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Outlet} from "react-router-dom";
 import './App.css';
 
 function App() {
@@ -31,7 +30,7 @@ function App() {
             {/* Hauptinhalt */}
             <div className="main-bg min-vh-100 pb-5">
                 <div className="container pt-4">
-                    <Patients />
+                    <Outlet />
                 </div>
             </div>
             {/* Fußzeile entfernt */}

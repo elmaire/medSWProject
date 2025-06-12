@@ -208,23 +208,10 @@ function Patients() {
         navigate(`/patient/${patient.firstName}-${patient.lastName}`, { state: { patient } });
     };
 
-    // Falls Daten noch geladen werden, zeige Ladeindikator an
+    // Falls Daten noch geladen werden, zeige leere Container an
     if (loading) {
-        // Berechnen des Fortschritts basierend auf geladenen und Gesamtzahl
-        const progress = totalCount !== '?'
-            ? Math.min(100, (loadedCount / totalCount) * 100)
-            : Math.min(95, loadedCount / 10); // Fallback, wenn wir die Gesamtzahl nicht kennen
-
         return (
             <div className="patients-container">
-                <h2>Patienten werden geladen</h2>
-                <p>{loadedCount} von {totalCount} Patienten geladen</p>
-                <div className="progress-bar-container">
-                    <div
-                        className="progress-bar"
-                        style={{ width: `${progress}%` }}
-                    ></div>
-                </div>
             </div>
         );
     }
