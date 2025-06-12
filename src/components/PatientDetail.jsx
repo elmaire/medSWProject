@@ -121,11 +121,7 @@ function PatientDetail() {
 
     // Anzeige des Ladezustands
     if (loading) {
-        return (
-            <div className="patient-detail">
-                <h2>Lade Patientendetails...</h2>
-            </div>
-        );
+        return null;
     }
 
     // Formatierungsfunktion für Adresse

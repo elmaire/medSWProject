@@ -31,18 +31,10 @@ function Patients() {
             try {
                 setLoading(true);
 
-                const countResponse = await fetch(`${fhirServerUrl}/Patient?_summary=count`);
-
-                if (!countResponse.ok) {
-                    throw new Error(`FHIR-Server antwortete mit Status: ${countResponse.status}`);
-                }
-
-
                 // Liste für alle Patienten
                 let allPatients = [];
 
-                // Wir nutzen eine einfachere Strategie: wir laden alle Seiten nacheinander
-                // mit einer festen Anzahl von Patienten pro Seite
+                // Wir laden alle Seiten nacheinander mit einer festen Anzahl von Patienten pro Seite
                 const pageSize = 250;
                 let hasMorePages = true;
                 let pageIndex = 0;
@@ -198,12 +190,9 @@ function Patients() {
         navigate(`/patient/${patient.firstName}-${patient.lastName}`, { state: { patient } });
     };
 
-    // Falls Daten noch geladen werden, zeige leere Container an
+    // Falls Daten noch geladen werden, zeige nichts an
     if (loading) {
-        return (
-            <div className="patients-container">
-            </div>
-        );
+        return null;
     }
 
     // Falls ein Fehler aufgetreten ist, zeige Fehlermeldung an
