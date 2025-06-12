@@ -15,10 +15,6 @@ function Patients() {
     const [loading, setLoading] = useState(true);
     // Zustand für eventuelle Fehlermeldungen
     const [error, setError] = useState(null);
-    // Zustand für Ladefortschritt
-    const [loadedCount, setLoadedCount] = useState(0);
-    // Speichert die Gesamtzahl der Patienten auf dem Server
-    const [totalCount, setTotalCount] = useState('?');
 
     // Zustände für die Suchfunktionalität
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,18 +30,13 @@ function Patients() {
         const fetchPatients = async () => {
             try {
                 setLoading(true);
-                setLoadedCount(0);
 
-                // Erste Anfrage, um die Gesamtzahl der Patienten zu ermitteln
                 const countResponse = await fetch(`${fhirServerUrl}/Patient?_summary=count`);
 
                 if (!countResponse.ok) {
                     throw new Error(`FHIR-Server antwortete mit Status: ${countResponse.status}`);
                 }
 
-                const countData = await countResponse.json();
-                const totalPatients = countData.total || '?';
-                setTotalCount(totalPatients);
 
                 // Liste für alle Patienten
                 let allPatients = [];
@@ -130,7 +121,6 @@ function Patients() {
 
                     // Zu den gesamten Patienten hinzufügen
                     allPatients = [...allPatients, ...patientsOnPage];
-                    setLoadedCount(allPatients.length);
 
                     // Aktualisieren der Patientenliste während des Ladens
                     setPatients(allPatients);
