@@ -92,7 +92,7 @@ function PatientDetail() {
                 // Spezifische Fehlerbehandlung für verschiedene Statuscodes
                 if (response.status === 409) {
                     throw new Error(`Der Patient kann nicht gelöscht werden, da noch Verweise darauf existieren (z.B. Termine, Befunde).
-                    Bitte entfernen Sie zuerst alle verknüpften Daten oder kontaktieren Sie den Systemadministrator.`);
+                    Bitte entfernen Sie zuerst alle verknüpften Daten.`);
                 } else {
                     throw new Error(`FHIR-Server antwortete mit Status: ${response.status}`);
                 }
@@ -126,7 +126,6 @@ function PatientDetail() {
 
     // Formatierungsfunktion für Adresse
     const formatAddress = (address) => {
-        if (!address) return "Keine Adressinformationen verfügbar";
 
         // Zusammensetzen der Adressteile zu einer lesbaren Form
         const parts = [];
@@ -135,7 +134,7 @@ function PatientDetail() {
         if (address.city) parts.push(address.city);
         if (address.country) parts.push(address.country);
 
-        return parts.join(", ") || "Keine vollständige Adresse verfügbar";
+        return parts.join(", ");
     };
 
     // Formatierungsfunktion für Kontaktinformationen
@@ -144,7 +143,7 @@ function PatientDetail() {
 
         // Mapping der Kontaktdaten mit passenden Icons basierend auf dem Typ
         return telecom.map(contact => {
-            const system = contact.system === 'phone' ? '☎️' :
+            const system = contact.system === 'phone' ? '📞' :
                            contact.system === 'email' ? '✉️' :
                            contact.system === 'url' ? '🌐' : '';
             return `${system} ${contact.value} (${contact.use || 'unbekannt'})`;

@@ -92,7 +92,7 @@
 .patient-avatar {
     width: 80px;
     height: 80px;
-    background: #646cff; /* Hintergrundfarbe für Avatar */
+    background: #90e349; /* Hintergrundfarbe für Avatar */
     color: white; /* Textfarbe für die Initialen */
     border-radius: 50%; /* Macht den Avatar kreisförmig */
     display: flex;

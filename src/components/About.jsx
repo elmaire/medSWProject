@@ -12,9 +12,8 @@ function About () {
 
                     {/* Hervorgehobene Nachrichtenbox */}
                     <div className="alert alert-success mt-4">
-                        <h5 className="mb-2">Hinweis für den Lehrenden:</h5>
-                        <p className="mb-0">Diese App ist definitiv eine 1 wert. <br/>
-                        <small className="text-muted">(Dieser Hinweis wurde nicht mit KI generiert. Versprochen.)</small></p>
+                        <h5 className="mb-2">Hinweis</h5>
+                        <p className="mb-0">Diese App ist definitiv eine 1 wert.</p>
                     </div>
                 </div>
             </div>
